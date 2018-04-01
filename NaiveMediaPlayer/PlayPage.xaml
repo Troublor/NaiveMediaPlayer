@@ -1,0 +1,79 @@
+﻿<Page x:Class="NaiveMediaPlayer.PlayPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:NaiveMediaPlayer"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d">
+
+    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="500"></ColumnDefinition>
+            <ColumnDefinition Width="*"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <Border Grid.Column="0"
+                BorderBrush="AntiqueWhite"
+                BorderThickness="0,0,3,0"
+                Width="500">
+            <StackPanel Margin="0,20,0,0">
+
+                <RelativePanel Width="400">
+                    <TextBlock HorizontalAlignment="Center"
+                               Text="选择一个媒体文件来播放（mp3, mp4）："
+                               RelativePanel.AlignVerticalCenterWithPanel="True"
+                               RelativePanel.LeftOf="AddButton"></TextBlock>
+                    <AppBarButton Width="50"
+                                  Height="50"
+                                  Icon="Add"
+                                  FontSize="25"
+                                  Background="LightGray"
+                                  Name="AddButton"
+                                  RelativePanel.AlignRightWithPanel="True"
+                                  Click="OnChooseFileButtonClicked"></AppBarButton>
+                </RelativePanel>
+                <TextBlock Name="InformationTextBlock"
+                           HorizontalAlignment="Center"
+                           Text=""
+                           Margin="0,28,0,0"></TextBlock>
+                <ListView ItemsSource="{x:Bind _playHistory, Mode=OneWay}"
+                          IsItemClickEnabled="True"
+                          IsSwipeEnabled="False"
+                          CanDragItems="False">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:DataType="local:PlayHistory">
+                            <StackPanel Orientation="Vertical"
+                                        Height="64">
+                                <StackPanel Orientation="Horizontal"
+                                            VerticalAlignment="Center"
+                                            Width="476"
+                                            Margin="0,0,12,0">
+                                    <TextBlock Text="{x:Bind FileName, Mode=OneWay}"
+                                               FontSize="28"
+                                               FontWeight="Bold"
+                                               Style="{ThemeResource BaseTextBlockStyle}"
+                                               Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}" />
+                                    <TextBlock Text="{x:Bind Time, Mode=OneWay}"
+                                               HorizontalAlignment="Right"
+                                               Style="{ThemeResource BodyTextBlockStyle}"
+                                               Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
+                                </StackPanel>
+                                <TextBlock FontSize="12" 
+                                           FontWeight="Light"
+                                           Margin="12,0,0,0"
+                                           Text="{x:Bind FilePath, Mode=OneWay}"></TextBlock>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </Border>
+        
+        <MediaElement Name="MediaElement"
+                      Grid.Column="1"
+                      Margin="0,0,0,0"
+                      Width="Auto"
+                      AutoPlay="True"
+                      AreTransportControlsEnabled="True" />
+    </Grid>
+</Page>
+ 

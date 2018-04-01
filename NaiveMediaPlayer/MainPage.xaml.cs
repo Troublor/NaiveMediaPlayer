@@ -25,6 +25,23 @@ namespace NaiveMediaPlayer
         public MainPage()
         {
             this.InitializeComponent();
+            ContentFrame.Navigate(typeof(HomePage));
+        }
+
+        private void OnNavigate(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        {
+            // find NavigationViewItem with Content that equals InvokedItem
+            var item = sender.MenuItems.OfType<NavigationViewItem>().First(x => (string)x.Content == (string)args.InvokedItem);
+            var section = item as NavigationViewItem;
+            switch (section.Tag)
+            {
+                case "play":
+                    ContentFrame.Navigate(typeof(PlayPage));
+                    break;
+                case "home":
+                    ContentFrame.Navigate(typeof(HomePage));
+                    break;
+            }
         }
     }
 }

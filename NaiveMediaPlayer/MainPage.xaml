@@ -7,7 +7,30 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
 
+        <NavigationView Background="{ThemeResource SystemControlAcrylicElementBrush}"
+                        CompactModeThresholdWidth="560"
+                        ExpandedModeThresholdWidth="1920"
+                        IsSettingsVisible="False"
+                        ItemInvoked="OnNavigate">
+            <NavigationView.MenuItems>
+                <NavigationViewItem Icon="Home"
+                                    Content="主页"
+                                    Tag="home"></NavigationViewItem>
+                <NavigationViewItem Icon="Play"
+                                    Content="播放"
+                                    Tag="play"></NavigationViewItem>
+            </NavigationView.MenuItems>
+            <Frame Name="ContentFrame"
+                   Margin="0,-48,0,0">
+                <Frame.ContentTransitions>
+                    <TransitionCollection>
+                        <NavigationThemeTransition />
+                    </TransitionCollection>
+                </Frame.ContentTransitions>
+            </Frame>
+        </NavigationView>
+        
     </Grid>
 </Page>
