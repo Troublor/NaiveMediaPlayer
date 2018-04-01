@@ -114,6 +114,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Assets\music.jpg" />
     <Content Include="Assets\test1.mp4" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />

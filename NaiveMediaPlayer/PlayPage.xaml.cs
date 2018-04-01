@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System.Collections.ObjectModel;
 using Windows.Storage;
+using Windows.System.Display;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -50,9 +51,34 @@ namespace NaiveMediaPlayer
                 MediaElement.SetSource(stream, file.ContentType);
                 MediaElement.Play();      
             }
-            else
+        
+          
+        }
+        private DisplayRequest appDisplayRequest = null;
+
+        private void MediaElement_CurrentStateChanged(object sender, RoutedEventArgs e)
+        {
+            MediaElement mediaElement = sender as MediaElement;
+            if (mediaElement != null && mediaElement.IsAudioOnly == false)
             {
-                this.InformationTextBlock.Text = "Operation cancelled.";
+                if (mediaElement.CurrentState == Windows.UI.Xaml.Media.MediaElementState.Playing)
+                {
+                    if (appDisplayRequest == null)
+                    {
+                        // This call creates an instance of the DisplayRequest object. 
+                        appDisplayRequest = new DisplayRequest();
+                        appDisplayRequest.RequestActive();
+                    }
+                }
+                else // CurrentState is Buffering, Closed, Opening, Paused, or Stopped. 
+                {
+                    if (appDisplayRequest != null)
+                    {
+                        // Deactivate the display request and set the var to null.
+                        appDisplayRequest.RequestRelease();
+                        appDisplayRequest = null;
+                    }
+                }
             }
         }
     }

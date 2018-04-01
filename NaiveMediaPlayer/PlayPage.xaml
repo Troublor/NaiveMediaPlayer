@@ -35,29 +35,33 @@
                            HorizontalAlignment="Center"
                            Text=""
                            Margin="0,28,0,0"></TextBlock>
+
                 <ListView ItemsSource="{x:Bind _playHistory, Mode=OneWay}"
-                          IsItemClickEnabled="True"
+                          IsItemClickEnabled="False"
                           IsSwipeEnabled="False"
-                          CanDragItems="False">
+                          CanDragItems="False"
+                          ScrollViewer.VerticalScrollMode="Enabled"
+                          Height="600">
                     <ListView.ItemTemplate>
                         <DataTemplate x:DataType="local:PlayHistory">
-                            <StackPanel Orientation="Vertical"
-                                        Height="64">
-                                <StackPanel Orientation="Horizontal"
-                                            VerticalAlignment="Center"
-                                            Width="476"
-                                            Margin="0,0,12,0">
+                            <StackPanel Orientation="Vertical">
+                                <RelativePanel Width="460"
+                                               Margin="0,0,12,0">
                                     <TextBlock Text="{x:Bind FileName, Mode=OneWay}"
                                                FontSize="28"
                                                FontWeight="Bold"
                                                Style="{ThemeResource BaseTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}" />
+                                               Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                                               RelativePanel.AlignVerticalCenterWithPanel="True"
+                                               RelativePanel.AlignLeftWithPanel="True" />
                                     <TextBlock Text="{x:Bind Time, Mode=OneWay}"
                                                HorizontalAlignment="Right"
                                                Style="{ThemeResource BodyTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" />
-                                </StackPanel>
-                                <TextBlock FontSize="12" 
+                                               Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                                               RelativePanel.AlignVerticalCenterWithPanel="True"
+                                               RelativePanel.AlignRightWithPanel="True" />
+                                </RelativePanel>
+                                <TextBlock FontSize="12"
                                            FontWeight="Light"
                                            Margin="12,0,0,0"
                                            Text="{x:Bind FilePath, Mode=OneWay}"></TextBlock>
@@ -65,15 +69,19 @@
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
+
+
             </StackPanel>
         </Border>
-        
+
         <MediaElement Name="MediaElement"
                       Grid.Column="1"
                       Margin="0,0,0,0"
                       Width="Auto"
                       AutoPlay="True"
-                      AreTransportControlsEnabled="True" />
+                      AreTransportControlsEnabled="True"
+                      PosterSource="/Assets/music.jpg"
+                      CurrentStateChanged="MediaElement_CurrentStateChanged" />
     </Grid>
 </Page>
  
