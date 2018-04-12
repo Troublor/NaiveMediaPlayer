@@ -20,7 +20,7 @@
                     <RowDefinition Height="Auto"></RowDefinition>
                     <RowDefinition Height="*"></RowDefinition>
                 </Grid.RowDefinitions>
-                <RelativePanel Width="400"
+                <RelativePanel Width="480"
                                Grid.Row="0">
                     <TextBlock HorizontalAlignment="Center"
                                Text="选择一个媒体文件来播放（mp3, mp4）："
@@ -55,40 +55,49 @@
                         </AppBarButton.Flyout>
                     </AppBarButton>
                 </RelativePanel>
-                <ScrollViewer Grid.Row="1">
-                    <ListView ItemsSource="{x:Bind _playHistory, Mode=OneWay}"
-                              IsItemClickEnabled="False"
-                              IsSwipeEnabled="False"
-                              CanDragItems="False"
-                              ScrollViewer.VerticalScrollMode="Enabled">
-                        <ListView.ItemTemplate>
-                            <DataTemplate x:DataType="local:PlayHistory">
-                                <StackPanel Orientation="Vertical">
-                                    <RelativePanel Width="460"
-                                                   Margin="0,0,12,0">
-                                        <TextBlock Text="{x:Bind FileName, Mode=OneWay}"
-                                                   FontSize="28"
-                                                   FontWeight="Bold"
-                                                   Style="{ThemeResource BaseTextBlockStyle}"
-                                                   Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
-                                                   RelativePanel.AlignVerticalCenterWithPanel="True"
-                                                   RelativePanel.AlignLeftWithPanel="True" />
-                                        <TextBlock Text="{x:Bind Time, Mode=OneWay}"
-                                                   HorizontalAlignment="Right"
-                                                   Style="{ThemeResource BodyTextBlockStyle}"
-                                                   Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
-                                                   RelativePanel.AlignVerticalCenterWithPanel="True"
-                                                   RelativePanel.AlignRightWithPanel="True" />
-                                    </RelativePanel>
-                                    <TextBlock FontSize="12"
-                                               FontWeight="Light"
-                                               Margin="12,0,0,0"
-                                               Text="{x:Bind FilePath, Mode=OneWay}"></TextBlock>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </ScrollViewer>
+                <Pivot Grid.Row="1"
+                       >
+                    <PivotItem Header="历史记录">
+                        <ScrollViewer Grid.Row="1">
+                            <ListView ItemsSource="{x:Bind _playHistory, Mode=OneWay}"
+                                      IsItemClickEnabled="False"
+                                      IsSwipeEnabled="False"
+                                      CanDragItems="False"
+                                      ScrollViewer.VerticalScrollMode="Enabled">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:PlayHistory">
+                                        <StackPanel Orientation="Vertical">
+                                            <RelativePanel Width="460"
+                                                           Margin="0,0,-16,0">
+                                                <TextBlock Text="{x:Bind FileName, Mode=OneWay}"
+                                                           FontSize="28"
+                                                           FontWeight="Bold"
+                                                           Style="{ThemeResource BaseTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                                                           RelativePanel.AlignVerticalCenterWithPanel="True"
+                                                           RelativePanel.AlignLeftWithPanel="True" />
+                                                <TextBlock Text="{x:Bind Time, Mode=OneWay}"
+                                                           HorizontalAlignment="Right"
+                                                           Style="{ThemeResource BodyTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                                                           RelativePanel.AlignVerticalCenterWithPanel="True"
+                                                           RelativePanel.AlignRightWithPanel="True" />
+                                            </RelativePanel>
+                                            <TextBlock FontSize="12"
+                                                       FontWeight="Light"
+                                                       Margin="12,0,0,0"
+                                                       Text="{x:Bind FilePath, Mode=OneWay}"></TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </ScrollViewer>
+                    </PivotItem>
+                    <PivotItem Header="缓存">
+                        <TextBlock Text="unread emails go here." />
+                    </PivotItem>
+                </Pivot>
+                
 
 
 
