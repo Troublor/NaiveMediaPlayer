@@ -15,9 +15,13 @@
                 BorderBrush="AntiqueWhite"
                 BorderThickness="0,0,3,0"
                 Width="500">
-            <StackPanel Margin="0,20,0,0">
-
-                <RelativePanel Width="400">
+            <Grid Margin="0,20,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
+                </Grid.RowDefinitions>
+                <RelativePanel Width="400"
+                               Grid.Row="0">
                     <TextBlock HorizontalAlignment="Center"
                                Text="选择一个媒体文件来播放（mp3, mp4）："
                                RelativePanel.AlignVerticalCenterWithPanel="True"
@@ -31,47 +35,44 @@
                                   RelativePanel.AlignRightWithPanel="True"
                                   Click="OnChooseFileButtonClicked"></AppBarButton>
                 </RelativePanel>
-                <TextBlock Name="InformationTextBlock"
-                           HorizontalAlignment="Center"
-                           Text=""
-                           Margin="0,28,0,0"></TextBlock>
-
-                <ListView ItemsSource="{x:Bind _playHistory, Mode=OneWay}"
-                          IsItemClickEnabled="False"
-                          IsSwipeEnabled="False"
-                          CanDragItems="False"
-                          ScrollViewer.VerticalScrollMode="Enabled"
-                          Height="600">
-                    <ListView.ItemTemplate>
-                        <DataTemplate x:DataType="local:PlayHistory">
-                            <StackPanel Orientation="Vertical">
-                                <RelativePanel Width="460"
-                                               Margin="0,0,12,0">
-                                    <TextBlock Text="{x:Bind FileName, Mode=OneWay}"
-                                               FontSize="28"
-                                               FontWeight="Bold"
-                                               Style="{ThemeResource BaseTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
-                                               RelativePanel.AlignVerticalCenterWithPanel="True"
-                                               RelativePanel.AlignLeftWithPanel="True" />
-                                    <TextBlock Text="{x:Bind Time, Mode=OneWay}"
-                                               HorizontalAlignment="Right"
-                                               Style="{ThemeResource BodyTextBlockStyle}"
-                                               Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
-                                               RelativePanel.AlignVerticalCenterWithPanel="True"
-                                               RelativePanel.AlignRightWithPanel="True" />
-                                </RelativePanel>
-                                <TextBlock FontSize="12"
-                                           FontWeight="Light"
-                                           Margin="12,0,0,0"
-                                           Text="{x:Bind FilePath, Mode=OneWay}"></TextBlock>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+                <ScrollViewer Grid.Row="1">
+                    <ListView ItemsSource="{x:Bind _playHistory, Mode=OneWay}"
+                              IsItemClickEnabled="False"
+                              IsSwipeEnabled="False"
+                              CanDragItems="False"
+                              ScrollViewer.VerticalScrollMode="Enabled">
+                        <ListView.ItemTemplate>
+                            <DataTemplate x:DataType="local:PlayHistory">
+                                <StackPanel Orientation="Vertical">
+                                    <RelativePanel Width="460"
+                                                   Margin="0,0,12,0">
+                                        <TextBlock Text="{x:Bind FileName, Mode=OneWay}"
+                                                   FontSize="28"
+                                                   FontWeight="Bold"
+                                                   Style="{ThemeResource BaseTextBlockStyle}"
+                                                   Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                                                   RelativePanel.AlignVerticalCenterWithPanel="True"
+                                                   RelativePanel.AlignLeftWithPanel="True" />
+                                        <TextBlock Text="{x:Bind Time, Mode=OneWay}"
+                                                   HorizontalAlignment="Right"
+                                                   Style="{ThemeResource BodyTextBlockStyle}"
+                                                   Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                                                   RelativePanel.AlignVerticalCenterWithPanel="True"
+                                                   RelativePanel.AlignRightWithPanel="True" />
+                                    </RelativePanel>
+                                    <TextBlock FontSize="12"
+                                               FontWeight="Light"
+                                               Margin="12,0,0,0"
+                                               Text="{x:Bind FilePath, Mode=OneWay}"></TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollViewer>
 
 
-            </StackPanel>
+
+            </Grid>
         </Border>
 
         <MediaElement Name="MediaElement"
