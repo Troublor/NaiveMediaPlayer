@@ -32,8 +32,28 @@
                                   FontSize="25"
                                   Background="LightGray"
                                   Name="AddButton"
-                                  RelativePanel.AlignRightWithPanel="True"
+                                  RelativePanel.LeftOf="AppBarSeparator"
                                   Click="OnChooseFileButtonClicked"></AppBarButton>
+                    <AppBarSeparator Name="AppBarSeparator"
+                                     RelativePanel.LeftOf="AddRemoteButton" />
+                    <AppBarButton Width="50"
+                                  Height="50"
+                                  FontSize="25"
+                                  Background="LightGray"
+                                  Name="AddRemoteButton"
+                                  RelativePanel.AlignRightWithPanel="True">
+                        <AppBarButton.Icon>
+                            <FontIcon Glyph="&#xE753;"></FontIcon>
+                        </AppBarButton.Icon>
+
+                        <AppBarButton.Flyout>
+                            <MenuFlyout>
+                                <MenuFlyoutItem Text="Neu Song"
+                                                Tag="NeuSong"
+                                                Click="MenuFlyoutItem_OnClick"></MenuFlyoutItem>
+                            </MenuFlyout>
+                        </AppBarButton.Flyout>
+                    </AppBarButton>
                 </RelativePanel>
                 <ScrollViewer Grid.Row="1">
                     <ListView ItemsSource="{x:Bind _playHistory, Mode=OneWay}"
