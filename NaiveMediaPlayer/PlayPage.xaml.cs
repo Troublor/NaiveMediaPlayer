@@ -51,6 +51,7 @@ namespace NaiveMediaPlayer
         private void LoadCloudResources()
         {
             MediaManager.Instance.CloudResources.Add(new CloudResource("http://www.neu.edu.cn/indexsource/neusong.mp3", "东大校歌.mp3"));
+            MediaManager.Instance.CloudResources.Add(new CloudResource("http://www.170mv.com/kw/other.web.re01.sycdn.kuwo.cn/resource/n3/8/18/10736220.mp3", "国歌.mp3"));
             foreach (CloudResource cloudResource in MediaManager.Instance.CloudResources)
             {
                 CloudResourcesStackPanel.Children.Add(new CloudItemViewer(cloudResource));

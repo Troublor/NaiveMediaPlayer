@@ -55,12 +55,14 @@ namespace NaiveMediaPlayer
             _downloadOperation = downloader.CreateDownload(source, destinationFile);
             Timer timer = new System.Timers.Timer(50);
             // Hook up the Elapsed event for the timer. 
-            timer.Elapsed += ShowCacheProgress;
-            timer.AutoReset = true;
-            timer.Enabled = false;
+            //            timer.Elapsed += ShowCacheProgress;
+            //            timer.AutoReset = true;
+            //            timer.Enabled = false;
             await _downloadOperation.StartAsync();
-            timer.Stop();
-            timer.Dispose();
+            //            timer.Stop();
+            //            timer.Dispose();
+            CacheButton.Content = "取消缓存";
+            CacheButton.IsEnabled = true;
             MediaManager.Instance.LoadCachedItems();
         }
 
@@ -76,10 +78,31 @@ namespace NaiveMediaPlayer
 
         }
 
-        private void CacheButton_OnClick(object sender, RoutedEventArgs e)
+        private async void CacheButton_OnClick(object sender, RoutedEventArgs e)
         {
-            CacheProgressBar.Visibility = Visibility.Visible;
-            Download(this.Uri, this.Name);
+            if ((String)CacheButton.Content == "缓存")
+            {
+                CacheButton.IsEnabled = false;
+                var progressRing = new ProgressRing();
+                progressRing.IsActive = true;
+                CacheButton.Content = progressRing;
+                CacheProgressBar.Visibility = Visibility.Visible;
+                Download(this.Uri, this.Name);
+            }
+            else if ((String)CacheButton.Content == "取消缓存")
+            {
+                CacheButton.IsEnabled = false;
+                var progressRing = new ProgressRing();
+                progressRing.IsActive = true;
+                CacheButton.Content = progressRing;
+                CacheProgressBar.Visibility = Visibility.Collapsed;
+                var file = await MediaManager.Instance.SaveFolder.GetFileAsync(this.Name);
+                await file.DeleteAsync();
+                CacheButton.Content = "缓存";
+                CacheButton.IsEnabled = true;
+                MediaManager.Instance.LoadCachedItems();
+            }
+
         }
     }
 }
