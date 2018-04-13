@@ -35,14 +35,15 @@ namespace NaiveMediaPlayer
 
         private ObservableCollection<CachedItem> _cachedItems = new ObservableCollection<CachedItem>();
 
+        private ObservableCollection<CloudResource> _cloudResources = new ObservableCollection<CloudResource>();
+
         private StorageFolder _saveFolder;
 
         public PlayPage()
         {
             this.InitializeComponent();
-            this.GetOrCreateFolder();
-            
-
+            this.InitializeLibrary();
+            _cloudResources.Add(new CloudResource("http://www.neu.edu.cn/indexsource/neusong.mp3", "东大校歌"));
         }
 
         private async void LoadCachedItems()
@@ -54,12 +55,10 @@ namespace NaiveMediaPlayer
                 {
                     this._cachedItems.Add(new CachedItem(file.Name, file.Path));
                 }
-
             }
-
         }
 
-        private async void GetOrCreateFolder()
+        private async void InitializeLibrary()
         {
             var myMusic = await Windows.Storage.StorageLibrary.GetLibraryAsync
                 (Windows.Storage.KnownLibraryId.Music);
@@ -83,7 +82,6 @@ namespace NaiveMediaPlayer
                 Windows.Storage.Pickers.PickerLocationId.VideosLibrary;
             picker.FileTypeFilter.Add(".mp3");
             picker.FileTypeFilter.Add(".mp4");
-
             Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
             if (file != null)
             {
@@ -124,35 +122,13 @@ namespace NaiveMediaPlayer
             }
         }
 
-        private async void test()
+        private async void Download(String url, String name)
         {
-            //            StorageFolder testFolder = await StorageFolder.GetFolderFromPathAsync(@"C:\Users\troub\Pictures");
-            //            StorageFile sourceFile = await testFolder.GetFileAsync("选课.PNG");
-            //            StorageFile destinationFile = await KnownFolders.CameraRoll.CreateFileAsync("MyTestImage.png");
-            //
-            //            using (var sourceStream = await sourceFile.OpenReadAsync())
-            //            {
-            //                using (var sourceInputStream = sourceStream.GetInputStreamAt(0))
-            //                {
-            //                    using (var destinationStream = await destinationFile.OpenAsync(FileAccessMode.ReadWrite))
-            //                    {
-            //                        using (var destinationOutputStream = destinationStream.GetOutputStreamAt(0))
-            //                        {
-            //                            await RandomAccessStream.CopyAndCloseAsync(sourceInputStream, destinationStream);
-            //                        }
-            //                    }
-            //                }
-            //            }
-
-            Uri source = new Uri("http://www.neu.edu.cn/indexsource/neusong.mp3");
-
+            Uri source = new Uri(url);
             StorageFile destinationFile =
-                await this._saveFolder.CreateFileAsync("NeuSong.mp3", CreationCollisionOption.GenerateUniqueName);
-
-
+                await this._saveFolder.CreateFileAsync(name, CreationCollisionOption.GenerateUniqueName);
             BackgroundDownloader downloader = new BackgroundDownloader();
             DownloadOperation download = downloader.CreateDownload(source, destinationFile);
-
             await download.StartAsync();
 
         }
@@ -162,6 +138,32 @@ namespace NaiveMediaPlayer
             MediaElement.Source = new Uri("http://www.neu.edu.cn/indexsource/neusong.mp3");
             MediaElement.Play();
             _playHistory.Add(new PlayHistory("neusong.mp3", "http://www.neu.edu.cn/indexsource/neusong.mp3"));
+        }
+
+        private async void CachedItemsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = CachedItemsListView.SelectedItem as CachedItem;
+            if (selectedItem == null)
+            {
+                return;
+            }
+            StorageFile file = await this._saveFolder.GetFileAsync(selectedItem.FileName);
+            var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
+            MediaElement.SetSource(stream, file.ContentType);
+            MediaElement.Play();
+            _playHistory.Add(new PlayHistory(selectedItem.FileName, selectedItem.FilePath));
+        }
+
+        private void CloudResourcesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var selectedItem = CloudResourcesListView.SelectedItem as CloudResource;
+            if (selectedItem == null)
+            {
+                return;
+            }
+            MediaElement.Source = new Uri(selectedItem.Uri);
+            MediaElement.Play();
+            _playHistory.Add(new PlayHistory(selectedItem.Name, selectedItem.Uri));
         }
     }
 
@@ -198,5 +200,18 @@ namespace NaiveMediaPlayer
         public String FileName { get; set; }
 
         public String FilePath { get; set; }
+    }
+
+    class CloudResource
+    {
+        public CloudResource(string uri, string name)
+        {
+            Uri = uri;
+            Name = name;
+        }
+
+        public String Uri { get; set; }
+
+        public String Name { get; set; }
     }
 }

@@ -23,7 +23,7 @@
                 <RelativePanel Width="480"
                                Grid.Row="0">
                     <TextBlock HorizontalAlignment="Center"
-                               Text="选择一个媒体文件来播放（mp3, mp4）："
+                               Text="选择一个媒体文件来播放（本地/远端）："
                                RelativePanel.AlignVerticalCenterWithPanel="True"
                                RelativePanel.LeftOf="AddButton"></TextBlock>
                     <AppBarButton Width="50"
@@ -45,18 +45,52 @@
                         <AppBarButton.Icon>
                             <FontIcon Glyph="&#xE753;"></FontIcon>
                         </AppBarButton.Icon>
-
                         <AppBarButton.Flyout>
                             <MenuFlyout>
                                 <MenuFlyoutItem Text="Neu Song"
                                                 Tag="NeuSong"
-                                                Click="MenuFlyoutItem_OnClick"></MenuFlyoutItem>
+                                                Click="MenuFlyoutItem_OnClick">
+
+                                </MenuFlyoutItem>
                             </MenuFlyout>
                         </AppBarButton.Flyout>
                     </AppBarButton>
                 </RelativePanel>
-                <Pivot Grid.Row="1"
-                       >
+                <Pivot Grid.Row="1">
+                    <PivotItem Header="远端资源">
+                        <ScrollViewer>
+                            <ListView Name="CloudResourcesListView"
+                                      ItemsSource="{x:Bind _cloudResources, Mode=OneWay}"
+                                      IsItemClickEnabled="True"
+                                      IsSwipeEnabled="False"
+                                      CanDragItems="False"
+                                      ScrollViewer.VerticalScrollMode="Enabled"
+                                      SelectionChanged="CloudResourcesListView_SelectionChanged">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:CloudResource">
+
+                                        <RelativePanel Width="460"
+                                                       Margin="0,0,-16,0">
+                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}"
+                                                       FontSize="28"
+                                                       FontWeight="Bold"
+                                                       Style="{ThemeResource BaseTextBlockStyle}"
+                                                       Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                                                       RelativePanel.AlignVerticalCenterWithPanel="True"
+                                                       RelativePanel.AlignLeftWithPanel="True" />
+                                            <Button Content="缓存"
+                                                    HorizontalAlignment="Right"
+                                                    Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
+                                                    RelativePanel.AlignVerticalCenterWithPanel="True"
+                                                    RelativePanel.AlignRightWithPanel="True" />
+                                        </RelativePanel>
+
+
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </ScrollViewer>
+                    </PivotItem>
                     <PivotItem Header="历史记录">
                         <ScrollViewer>
                             <ListView ItemsSource="{x:Bind _playHistory, Mode=OneWay}"
@@ -95,11 +129,13 @@
                     </PivotItem>
                     <PivotItem Header="缓存">
                         <ScrollViewer>
-                            <ListView ItemsSource="{x:Bind _cachedItems, Mode=OneWay}"
-                                      IsItemClickEnabled="False"
+                            <ListView Name="CachedItemsListView"
+                                      ItemsSource="{x:Bind _cachedItems, Mode=OneWay}"
+                                      IsItemClickEnabled="True"
                                       IsSwipeEnabled="False"
                                       CanDragItems="False"
-                                      ScrollViewer.VerticalScrollMode="Enabled">
+                                      ScrollViewer.VerticalScrollMode="Enabled"
+                                      SelectionChanged="CachedItemsListView_SelectionChanged">
                                 <ListView.ItemTemplate>
                                     <DataTemplate x:DataType="local:CachedItem">
                                         <StackPanel Orientation="Vertical">
@@ -124,7 +160,7 @@
                         </ScrollViewer>
                     </PivotItem>
                 </Pivot>
-                
+
 
 
 
