@@ -20,6 +20,7 @@ using Windows.Storage.Search;
 using Windows.Storage.Streams;
 using Windows.System.Display;
 using Windows.UI.Popups;
+using NaiveMediaPlayer.Models;
 
 // https://go.microsoft.com/fwlink/?LinkId=234238 上介绍了“空白页”项模板
 
@@ -31,31 +32,30 @@ namespace NaiveMediaPlayer
     /// </summary>
     public sealed partial class PlayPage : Page
     {
-        private ObservableCollection<PlayHistory> _playHistory = new ObservableCollection<PlayHistory>();
+        private ObservableCollection<PlayHistory> _playHistories = new ObservableCollection<PlayHistory>();
 
         private ObservableCollection<CachedItem> _cachedItems = new ObservableCollection<CachedItem>();
-
-        private ObservableCollection<CloudResource> _cloudResources = new ObservableCollection<CloudResource>();
-
-        private StorageFolder _saveFolder;
 
         public PlayPage()
         {
             this.InitializeComponent();
-            this.InitializeLibrary();
-            _cloudResources.Add(new CloudResource("http://www.neu.edu.cn/indexsource/neusong.mp3", "东大校歌"));
+            
         }
 
-        private async void LoadCachedItems()
+        private void Page_Loaded(object sender, RoutedEventArgs e)
         {
-            var fileList = await this._saveFolder.GetFilesAsync();
-            foreach (var file in fileList)
+            this.InitializeLibrary();
+     
+        }
+
+        private void LoadCloudResources()
+        {
+            MediaManager.Instance.CloudResources.Add(new CloudResource("http://www.neu.edu.cn/indexsource/neusong.mp3", "东大校歌.mp3"));
+            foreach (CloudResource cloudResource in MediaManager.Instance.CloudResources)
             {
-                if (file.FileType == ".mp3" || file.FileType == ".mp4")
-                {
-                    this._cachedItems.Add(new CachedItem(file.Name, file.Path));
-                }
+                CloudResourcesStackPanel.Children.Add(new CloudItemViewer(cloudResource));
             }
+            
         }
 
         private async void InitializeLibrary()
@@ -65,13 +65,18 @@ namespace NaiveMediaPlayer
             Windows.Storage.StorageFolder saveMusicFolder = myMusic.SaveFolder;
             try
             {
-                this._saveFolder = await StorageFolder.GetFolderFromPathAsync(saveMusicFolder.Path + @"\naive_media");
+                MediaManager.Instance.SaveFolder = await StorageFolder.GetFolderFromPathAsync(saveMusicFolder.Path + @"\naive_media");
             }
             catch (Exception e)
             {
-                this._saveFolder = await saveMusicFolder.CreateFolderAsync("naive_media");
+                MediaManager.Instance.SaveFolder = await saveMusicFolder.CreateFolderAsync("naive_media");
             }
-            this.LoadCachedItems();
+            MediaManager.Instance.PlayHistories = _playHistories;
+            MediaManager.Instance.CachedItems = _cachedItems;
+            MediaManager.Instance.CloudResources = new ObservableCollection<CloudResource>();
+            MediaManager.Instance.MediaElement = MediaElement;
+            MediaManager.Instance.LoadCachedItems();
+            LoadCloudResources();
         }
 
         private async void OnChooseFileButtonClicked(object sender, RoutedEventArgs e)
@@ -85,7 +90,7 @@ namespace NaiveMediaPlayer
             Windows.Storage.StorageFile file = await picker.PickSingleFileAsync();
             if (file != null)
             {
-                _playHistory.Add(new PlayHistory(file.Name, file.Path));
+                MediaManager.Instance.PlayHistories.Add(new PlayHistory(file.Name, file.Path));
                 // Application now has read/write access to the picked file
                 var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
                 MediaElement.SetSource(stream, file.ContentType);
@@ -122,22 +127,11 @@ namespace NaiveMediaPlayer
             }
         }
 
-        private async void Download(String url, String name)
-        {
-            Uri source = new Uri(url);
-            StorageFile destinationFile =
-                await this._saveFolder.CreateFileAsync(name, CreationCollisionOption.GenerateUniqueName);
-            BackgroundDownloader downloader = new BackgroundDownloader();
-            DownloadOperation download = downloader.CreateDownload(source, destinationFile);
-            await download.StartAsync();
-
-        }
-
         private void MenuFlyoutItem_OnClick(object sender, RoutedEventArgs e)
         {
             MediaElement.Source = new Uri("http://www.neu.edu.cn/indexsource/neusong.mp3");
             MediaElement.Play();
-            _playHistory.Add(new PlayHistory("neusong.mp3", "http://www.neu.edu.cn/indexsource/neusong.mp3"));
+            MediaManager.Instance.PlayHistories.Add(new PlayHistory("neusong.mp3", "http://www.neu.edu.cn/indexsource/neusong.mp3"));
         }
 
         private async void CachedItemsListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -147,24 +141,14 @@ namespace NaiveMediaPlayer
             {
                 return;
             }
-            StorageFile file = await this._saveFolder.GetFileAsync(selectedItem.FileName);
+            StorageFile file = await MediaManager.Instance.SaveFolder.GetFileAsync(selectedItem.FileName);
             var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
             MediaElement.SetSource(stream, file.ContentType);
             MediaElement.Play();
-            _playHistory.Add(new PlayHistory(selectedItem.FileName, selectedItem.FilePath));
+            MediaManager.Instance.PlayHistories.Add(new PlayHistory(selectedItem.FileName, selectedItem.FilePath));
         }
 
-        private void CloudResourcesListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            var selectedItem = CloudResourcesListView.SelectedItem as CloudResource;
-            if (selectedItem == null)
-            {
-                return;
-            }
-            MediaElement.Source = new Uri(selectedItem.Uri);
-            MediaElement.Play();
-            _playHistory.Add(new PlayHistory(selectedItem.Name, selectedItem.Uri));
-        }
+        
     }
 
     class PlayHistory
@@ -202,7 +186,7 @@ namespace NaiveMediaPlayer
         public String FilePath { get; set; }
     }
 
-    class CloudResource
+    public class CloudResource
     {
         public CloudResource(string uri, string name)
         {

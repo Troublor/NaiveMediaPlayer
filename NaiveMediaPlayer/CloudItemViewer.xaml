@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="NaiveMediaPlayer.CloudItemViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:NaiveMediaPlayer"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             d:DesignHeight="80"
+             d:DesignWidth="480">
+
+    <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="20"></RowDefinition>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="320"></ColumnDefinition>
+            <ColumnDefinition Width="160"></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+        <TextBlock Name="Info"
+                   Grid.Row="0"
+                   Grid.Column="0"
+                   VerticalAlignment="Center"
+                   Padding="10"
+                   FontSize="24"
+                   Text="{x:Bind Name}"></TextBlock>
+        <RelativePanel Grid.Row="0"
+                       Grid.Column="1"
+                       Width="160"
+                       Padding="20,10,20,10">
+            <Button Name="PlayButton"
+                    Content="播放"
+                    RelativePanel.AlignVerticalCenterWithPanel="True"
+                    Click="PlayButton_OnClick"></Button>
+            <Button Name="CacheButton"
+                    Content="缓存"
+                    RelativePanel.AlignRightWithPanel="True"
+                    RelativePanel.AlignVerticalCenterWithPanel="True"
+                    Click="CacheButton_OnClick"></Button>
+        </RelativePanel>
+        
+        <ProgressBar Name="CacheProgressBar"
+                     Visibility="Collapsed"
+                     Width="300"
+                     Grid.Row="1"
+                     ></ProgressBar>
+        <TextBlock Name="test"> </TextBlock>
+    </Grid>
+</UserControl>

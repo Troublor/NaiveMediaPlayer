@@ -4,7 +4,8 @@
       xmlns:local="using:NaiveMediaPlayer"
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-      mc:Ignorable="d">
+      mc:Ignorable="d"
+      Loaded="Page_Loaded">
 
     <Grid Background="{ThemeResource SystemControlAcrylicWindowBrush}">
         <Grid.ColumnDefinitions>
@@ -59,41 +60,17 @@
                 <Pivot Grid.Row="1">
                     <PivotItem Header="远端资源">
                         <ScrollViewer>
-                            <ListView Name="CloudResourcesListView"
-                                      ItemsSource="{x:Bind _cloudResources, Mode=OneWay}"
-                                      IsItemClickEnabled="True"
-                                      IsSwipeEnabled="False"
-                                      CanDragItems="False"
-                                      ScrollViewer.VerticalScrollMode="Enabled"
-                                      SelectionChanged="CloudResourcesListView_SelectionChanged">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate x:DataType="local:CloudResource">
-
-                                        <RelativePanel Width="460"
-                                                       Margin="0,0,-16,0">
-                                            <TextBlock Text="{x:Bind Name, Mode=OneWay}"
-                                                       FontSize="28"
-                                                       FontWeight="Bold"
-                                                       Style="{ThemeResource BaseTextBlockStyle}"
-                                                       Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
-                                                       RelativePanel.AlignVerticalCenterWithPanel="True"
-                                                       RelativePanel.AlignLeftWithPanel="True" />
-                                            <Button Content="缓存"
-                                                    HorizontalAlignment="Right"
-                                                    Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}"
-                                                    RelativePanel.AlignVerticalCenterWithPanel="True"
-                                                    RelativePanel.AlignRightWithPanel="True" />
-                                        </RelativePanel>
-
-
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
+                            <StackPanel Name="CloudResourcesStackPanel">
+<!--                                <local:CloudItemViewer Height="80"-->
+<!--                                                       Width="480"-->
+<!--                                                       Margin="0,5,0,5"></local:CloudItemViewer>-->
+                            </StackPanel>
+                            
                         </ScrollViewer>
                     </PivotItem>
                     <PivotItem Header="历史记录">
                         <ScrollViewer>
-                            <ListView ItemsSource="{x:Bind _playHistory, Mode=OneWay}"
+                            <ListView ItemsSource="{x:Bind _playHistories, Mode=OneWay}"
                                       IsItemClickEnabled="False"
                                       IsSwipeEnabled="False"
                                       CanDragItems="False"
@@ -177,4 +154,6 @@
                       CurrentStateChanged="MediaElement_CurrentStateChanged" />
     </Grid>
 </Page>
+ 
+
  
