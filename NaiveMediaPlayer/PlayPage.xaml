@@ -58,7 +58,7 @@
                 <Pivot Grid.Row="1"
                        >
                     <PivotItem Header="历史记录">
-                        <ScrollViewer Grid.Row="1">
+                        <ScrollViewer>
                             <ListView ItemsSource="{x:Bind _playHistory, Mode=OneWay}"
                                       IsItemClickEnabled="False"
                                       IsSwipeEnabled="False"
@@ -94,7 +94,34 @@
                         </ScrollViewer>
                     </PivotItem>
                     <PivotItem Header="缓存">
-                        <TextBlock Text="unread emails go here." />
+                        <ScrollViewer>
+                            <ListView ItemsSource="{x:Bind _cachedItems, Mode=OneWay}"
+                                      IsItemClickEnabled="False"
+                                      IsSwipeEnabled="False"
+                                      CanDragItems="False"
+                                      ScrollViewer.VerticalScrollMode="Enabled">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate x:DataType="local:CachedItem">
+                                        <StackPanel Orientation="Vertical">
+                                            <RelativePanel Width="460"
+                                                           Margin="0,0,-16,0">
+                                                <TextBlock Text="{x:Bind FileName, Mode=OneWay}"
+                                                           FontSize="28"
+                                                           FontWeight="Bold"
+                                                           Style="{ThemeResource BaseTextBlockStyle}"
+                                                           Foreground="{ThemeResource SystemControlPageTextBaseHighBrush}"
+                                                           RelativePanel.AlignVerticalCenterWithPanel="True"
+                                                           RelativePanel.AlignLeftWithPanel="True" />
+                                            </RelativePanel>
+                                            <TextBlock FontSize="12"
+                                                       FontWeight="Light"
+                                                       Margin="12,0,0,0"
+                                                       Text="{x:Bind FilePath, Mode=OneWay}"></TextBlock>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                            </ListView>
+                        </ScrollViewer>
                     </PivotItem>
                 </Pivot>
                 

@@ -33,12 +33,29 @@ namespace NaiveMediaPlayer
     {
         private ObservableCollection<PlayHistory> _playHistory = new ObservableCollection<PlayHistory>();
 
+        private ObservableCollection<CachedItem> _cachedItems = new ObservableCollection<CachedItem>();
+
         private StorageFolder _saveFolder;
 
         public PlayPage()
         {
             this.InitializeComponent();
             this.GetOrCreateFolder();
+            
+
+        }
+
+        private async void LoadCachedItems()
+        {
+            var fileList = await this._saveFolder.GetFilesAsync();
+            foreach (var file in fileList)
+            {
+                if (file.FileType == ".mp3" || file.FileType == ".mp4")
+                {
+                    this._cachedItems.Add(new CachedItem(file.Name, file.Path));
+                }
+
+            }
 
         }
 
@@ -55,7 +72,7 @@ namespace NaiveMediaPlayer
             {
                 this._saveFolder = await saveMusicFolder.CreateFolderAsync("naive_media");
             }
-            test();
+            this.LoadCachedItems();
         }
 
         private async void OnChooseFileButtonClicked(object sender, RoutedEventArgs e)
@@ -168,5 +185,18 @@ namespace NaiveMediaPlayer
         {
             return this.FileName + "   (" + this.FilePath + ")" + "\t\t\t" + this.Time.ToLocalTime().TimeOfDay;
         }
+    }
+
+    class CachedItem
+    {
+        public CachedItem(String name = "", String path = "")
+        {
+            this.FileName = name;
+            this.FilePath = path;
+        }
+
+        public String FileName { get; set; }
+
+        public String FilePath { get; set; }
     }
 }
